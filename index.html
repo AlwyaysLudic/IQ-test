@@ -48,8 +48,8 @@ const questions = [
   { q: "Which one is a fruit?", a: ["Carrot", "Apple", "Potato"], correct: "Apple" },
   { q: "What color is the sky on a clear day?", a: ["Blue", "Green", "Red"], correct: "Blue" },
   { q: "How many days in a week?", a: ["5", "7", "10"], correct: "7" },
-  { q: "Which planet is closest to the Sun?", a: ["Mercury", "Mars", "Venus"], correct: "Mercury" },
-  {
+  { q: "Which planet is closest to the Sun?", a: ["Mars", "Venus", "Mercury"], correct: "Mercury" },
+  { q: "Who has the most powerful bie force?", a["A Bird", "You", "Your pet the crocodile"], correct: "Your pet the crocodile" },
     q: "What's Equator's Capital? (Hint: starts with Q)",
     a: ["Quito", "Milan", "Idk"],
     correct: "Idk",
@@ -61,7 +61,7 @@ function loadQuestion() {
   document.getElementById('message').textContent = "";
 
   if (current >= questions.length) {
-    document.getElementById('quiz').innerHTML = `<h2>Test Finished! Your IQ is $so lame !{iq} </h2>`;
+    document.getElementById('quiz').innerHTML = `<h2>Test Finished! Your IQ is ${iq} </h2>`;
     return;
   }
   
