@@ -23,12 +23,12 @@
     padding: 10px 20px;
     font-size: 1em;
     cursor: pointer;
-    position: relative;
+    transition: transform 0.2s;
   }
-  #trollMessage {
+  #message {
     font-size: 1.2em;
     color: red;
-    margin-top: 15px;
+    margin-top: 10px;
   }
 </style>
 </head>
@@ -36,33 +36,29 @@
 
 <h1>🧠 IQ Test</h1>
 <div id="iq">IQ: 0</div>
-<div id="brainStatus"></div>
+<div id="message"></div>
 <div id="quiz"></div>
-<div id="trollMessage"></div>
 
 <script>
 let iq = 0;
 let current = 0;
-let moving = false;
-let moveInterval;
 
 const questions = [
   { q: "What is 2 + 2 ?", a: ["3", "4", "5"], correct: "4" },
   { q: "Which one is a fruit?", a: ["Carrot", "Apple", "Potato"], correct: "Apple" },
   { q: "What color is the sky on a clear day?", a: ["Blue", "Green", "Red"], correct: "Blue" },
-  { q: "Which planet is known as the Red Planet?", a: ["Mars", "Venus", "Jupiter"], correct: "Mars" },
   { q: "How many days in a week?", a: ["5", "7", "10"], correct: "7" },
-  { q: "Which animal barks?", a: ["Dog", "Cat", "Cow"], correct: "Dog" },
-  { 
+  { q: "Which planet is closest to the Sun?", a: ["Mercury", "Mars", "Venus"], correct: "Mercury" },
+  {
     q: "What's Equator's Capital? (Hint: starts with Q)",
-    a: ["Quito", "Milan", "Idk"],
-    correct: "Idk", // troll
+    a: ["Quito", "Milan", "London"],
+    correct: "Milan", // troll: Quito clique = Milan
     troll: true
   }
 ];
 
 function loadQuestion() {
-  document.getElementById('trollMessage').textContent = "";
+  document.getElementById('message').textContent = "";
 
   if (current >= questions.length) {
     document.getElementById('quiz').innerHTML = `<h2>Test Finished! Your IQ is ${iq}</h2>`;
@@ -79,49 +75,46 @@ function loadQuestion() {
   html += `</div>`;
   document.getElementById('quiz').innerHTML = html;
 
-  document.querySelectorAll("button").forEach(btn => {
-    btn.addEventListener("click", () => {
-      checkAnswer(btn.textContent);
-    });
-  });
+  const buttons = document.querySelectorAll("button");
 
   if (q.troll) {
-    const quitobtn = [...document.querySelectorAll("button")].find(b => b.textContent === "Quito");
+    const quitobtn = [...buttons].find(b => b.textContent === "Quito");
 
+    // Déplacement à chaque survol, mais reste visible
     quitobtn.addEventListener("mouseenter", () => {
-      if (!moving) {
-        moving = true;
-        moveInterval = setInterval(() => {
-          quitobtn.style.position = "absolute";
-          quitobtn.style.left = Math.random() * (window.innerWidth - 100) + "px";
-          quitobtn.style.top = Math.random() * (window.innerHeight - 50) + "px";
-        }, 300);
+      const dx = (Math.random() - 0.5) * 200;
+      const dy = (Math.random() - 0.5) * 100;
+      quitobtn.style.transform = `translate(${dx}px, ${dy}px)`;
+    });
 
-        // Stop after 5 sec
-        setTimeout(() => {
-          clearInterval(moveInterval);
-          quitobtn.style.position = "relative";
-          moving = false;
-        }, 5000);
+    // Quito → troll
+    quitobtn.onclick = () => {
+      iq = 0;
+      document.getElementById('iq').textContent = `IQ: ${iq}`;
+      document.getElementById('message').textContent =
+        "Seriously ? Milan is Equator's capital ? Bro, it's in Italy ! You deserved it ! 🍼 Baby brain";
+      current++;
+      setTimeout(loadQuestion, 2500);
+    };
+
+    // Les autres réponses normales
+    buttons.forEach(btn => {
+      if (btn !== quitobtn) {
+        btn.onclick = () => checkAnswer(btn.textContent);
       }
     });
 
-    quitobtn.onclick = () => {
-      document.getElementById('trollMessage').textContent =
-        "😂 Seriously? Milan is Equator's capital? Bro, it's in Italy! You deserved it!";
-      iq = 0;
-      document.getElementById('iq').textContent = `IQ: ${iq}`;
-      document.getElementById('brainStatus').textContent = "🍼 Baby brain";
-      current++;
-      setTimeout(loadQuestion, 2000);
-    };
+  } else {
+    buttons.forEach(btn => {
+      btn.onclick = () => checkAnswer(btn.textContent);
+    });
   }
 }
 
 function checkAnswer(chosen) {
   const correct = questions[current].correct;
   if (chosen === correct) {
-    if (current < questions.length - 1) iq += 30; // +30 except troll
+    if (current < 3) iq += 30; // +30 seulement pour les 3 premières
     document.getElementById('iq').textContent = `IQ: ${iq}`;
     alert("✅ Correct!");
   } else {
