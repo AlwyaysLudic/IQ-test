@@ -46,16 +46,21 @@ function loadQuestion() {
     let moves = 0;
 
     // Quito qui fuit la souris
-    quitobtn.addEventListener("mouseenter", () => {
-      if (moves < 8) {
-        const maxX = window.innerWidth - quitobtn.offsetWidth;
-        const maxY = window.innerHeight - quitobtn.offsetHeight;
-        const dx = Math.random() * maxX - maxX / 2;
-        const dy = Math.random() * maxY - maxY / 2;
-        quitobtn.style.transform = `translate(${dx}px, ${dy}px)`;
-        moves++;
-      }
-    });
+   quitobtn.addEventListener("mouseenter", () => {
+  if (moves < 8) {
+    const maxX = window.innerWidth - quitobtn.offsetWidth;
+    const maxY = window.innerHeight - quitobtn.offsetHeight;
+
+    const newX = Math.random() * maxX; // entre 0 et maxX
+    const newY = Math.random() * maxY; // entre 0 et maxY
+
+    quitobtn.style.position = "absolute"; // important pour pouvoir bouger librement
+    quitobtn.style.left = `${newX}px`;
+    quitobtn.style.top = `${newY}px`;
+
+    moves++;
+  }
+});
 
     // Clique sur Quito → reset IQ
     quitobtn.onclick = () => {
