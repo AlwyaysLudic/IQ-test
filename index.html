@@ -90,12 +90,12 @@ function loadQuestion() {
 
     let moves = 0;
 
+    // Quito bouge
     quitobtn.addEventListener("mouseenter", () => {
       if (moves < 8) {
         const container = quitobtn.parentElement;
         const maxX = container.offsetWidth - quitobtn.offsetWidth;
         const maxY = container.offsetHeight - quitobtn.offsetHeight;
-
         const newX = Math.random() * maxX;
         const newY = Math.random() * maxY;
 
@@ -133,6 +133,7 @@ function loadQuestion() {
       setTimeout(loadQuestion, 2500);
     };
 
+    // Les autres boutons
     buttons.forEach(btn => {
       if (btn !== quitobtn && btn !== idkbtn && btn !== milanbtn) {
         btn.onclick = () => checkAnswer(btn.textContent);
