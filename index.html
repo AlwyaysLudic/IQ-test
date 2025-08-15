@@ -18,7 +18,6 @@
     justify-content: center;
     gap: 10px;
     flex-wrap: wrap;
-    position: relative; /* Nécessaire pour que Quito se déplace dans ce conteneur */
   }
   button {
     padding: 10px 20px;
@@ -63,7 +62,10 @@ function loadQuestion() {
   document.getElementById('message').textContent = "";
 
   if (current >= questions.length) {
-    document.getElementById('quiz').innerHTML = `<h2>Test Finished! Your IQ is ${iq} </h2>`;
+    document.getElementById('quiz').innerHTML = `
+      <h2>Test finished! Your IQ is ${iq}</h2>
+      <button onclick="restartGame()">🔄 Replay</button>
+    `;
     return;
   }
   
@@ -83,22 +85,17 @@ function loadQuestion() {
     const quitobtn = [...buttons].find(b => b.textContent === "Quito");
     let moves = 0;
 
-    quitobtn.style.position = "absolute";
-
     quitobtn.addEventListener("mouseenter", () => {
       if (moves < 8) {
-        const parent = quitobtn.parentElement;
-        const maxX = parent.clientWidth - quitobtn.offsetWidth;
-        const maxY = parent.clientHeight - quitobtn.offsetHeight;
-        const newX = Math.random() * maxX;
-        const newY = Math.random() * maxY;
-        quitobtn.style.left = `${newX}px`;
-        quitobtn.style.top = `${newY}px`;
+        const maxX = window.innerWidth - quitobtn.offsetWidth;
+        const maxY = window.innerHeight - quitobtn.offsetHeight;
+        const dx = Math.random() * maxX - maxX / 2;
+        const dy = Math.random() * maxY - maxY / 2;
+        quitobtn.style.transform = `translate(${dx}px, ${dy}px)`;
         moves++;
       }
     });
 
-    // Quito → reset IQ
     quitobtn.onclick = () => {
       iq = 0;
       document.getElementById('iq').textContent = `IQ: ${iq}`;
@@ -108,17 +105,18 @@ function loadQuestion() {
       setTimeout(loadQuestion, 2500);
     };
 
-    // Gestion des autres réponses
+    const idkbtn = [...buttons].find(b => b.textContent === "Idk");
+    idkbtn.onclick = () => {
+      iq -= 120;
+      document.getElementById('iq').textContent = `IQ: ${iq}`;
+      document.getElementById('message').textContent =
+        "How dare you cheat ?";
+      current++;
+      setTimeout(loadQuestion, 2500);
+    };
+
     buttons.forEach(btn => {
-      if (btn.textContent === "Idk") {
-        btn.onclick = () => {
-          iq -= 120;
-          document.getElementById('iq').textContent = `IQ: ${iq}`;
-          document.getElementById('message').textContent = "How dare you cheat ?";
-          current++;
-          setTimeout(loadQuestion, 2500);
-        };
-      } else if (btn !== quitobtn) {
+      if (btn !== quitobtn && btn !== idkbtn) {
         btn.onclick = () => checkAnswer(btn.textContent);
       }
     });
@@ -133,13 +131,21 @@ function loadQuestion() {
 function checkAnswer(chosen) {
   const correct = questions[current].correct;
   if (chosen === correct) {
-    iq += 10; // +10 IQ pour chaque bonne réponse
+    if (current < 3) iq += 30; 
+    else iq += 10; 
     document.getElementById('iq').textContent = `IQ: ${iq}`;
     alert("✅ Correct!");
   } else {
     alert("❌ Wrong!");
   }
   current++;
+  loadQuestion();
+}
+
+function restartGame() {
+  iq = 0;
+  current = 0;
+  document.getElementById('iq').textContent = `IQ: ${iq}`;
   loadQuestion();
 }
 
