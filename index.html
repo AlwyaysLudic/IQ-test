@@ -1,3 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>IQ Test</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin-top: 40px;
+  }
+  .question {
+    font-size: 1.5em;
+    margin: 20px 0;
+  }
+  .answers {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    position: relative; /* important pour contenir Quito */
+    min-height: 80px;
+  }
+  button {
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  #message {
+    font-size: 1.2em;
+    color: red;
+    margin-top: 10px;
+  }
+</style>
+</head>
+<body>
+
+<h1>🧠 IQ Test</h1>
+<div id="iq">IQ: 0</div>
+<div id="message"></div>
+<div id="quiz"></div>
+
 <script>
 let iq = 0;
 let current = 0;
@@ -45,24 +88,23 @@ function loadQuestion() {
     const idkbtn = [...buttons].find(b => b.textContent === "Idk");
     let moves = 0;
 
-    // Quito qui fuit la souris
-   quitobtn.addEventListener("mouseenter", () => {
-  if (moves < 8) {
-    const maxX = window.innerWidth - quitobtn.offsetWidth;
-    const maxY = window.innerHeight - quitobtn.offsetHeight;
+    quitobtn.addEventListener("mouseenter", () => {
+      if (moves < 8) {
+        const container = quitobtn.parentElement;
+        const maxX = container.offsetWidth - quitobtn.offsetWidth;
+        const maxY = container.offsetHeight - quitobtn.offsetHeight;
 
-    const newX = Math.random() * maxX; // entre 0 et maxX
-    const newY = Math.random() * maxY; // entre 0 et maxY
+        const newX = Math.random() * maxX;
+        const newY = Math.random() * maxY;
 
-    quitobtn.style.position = "absolute"; // important pour pouvoir bouger librement
-    quitobtn.style.left = `${newX}px`;
-    quitobtn.style.top = `${newY}px`;
+        quitobtn.style.position = "absolute";
+        quitobtn.style.left = `${newX}px`;
+        quitobtn.style.top = `${newY}px`;
 
-    moves++;
-  }
-});
+        moves++;
+      }
+    });
 
-    // Clique sur Quito → reset IQ
     quitobtn.onclick = () => {
       iq = 0;
       document.getElementById('iq').textContent = `IQ: ${iq}`;
@@ -72,17 +114,14 @@ function loadQuestion() {
       setTimeout(loadQuestion, 2500);
     };
 
-    // Clique sur Idk → -120 IQ
     idkbtn.onclick = () => {
       iq -= 120;
       document.getElementById('iq').textContent = `IQ: ${iq}`;
-      document.getElementById('message').textContent =
-        "Don't you dare cheating ?";
+      document.getElementById('message').textContent = "Don't you dare cheating ?";
       current++;
       setTimeout(loadQuestion, 2500);
     };
 
-    // Les autres réponses (ex: Milan)
     buttons.forEach(btn => {
       if (btn !== quitobtn && btn !== idkbtn) {
         btn.onclick = () => checkAnswer(btn.textContent);
@@ -99,8 +138,8 @@ function loadQuestion() {
 function checkAnswer(chosen) {
   const correct = questions[current].correct;
   if (chosen === correct) {
-    if (current < 3) iq += 30; 
-    else iq += 10; 
+    if (current < 3) iq += 30;
+    else iq += 10;
     document.getElementById('iq').textContent = `IQ: ${iq}`;
     alert("✅ Correct!");
   } else {
