@@ -121,7 +121,13 @@ function loadQuestion() {
       current++;
       setTimeout(loadQuestion, 2500);
     };
-
+    
+    Milanbtn.onclick = () => {
+      iq -= 120;
+      document.getElementById('iq').textContent = `IQ: ${iq}`;
+      document.getElementById('message').textContent = "Tried to troll the troller ?";
+      current++;
+      setTimeout(loadQuestion, 2500);
     buttons.forEach(btn => {
       if (btn !== quitobtn && btn !== idkbtn) {
         btn.onclick = () => checkAnswer(btn.textContent);
