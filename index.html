@@ -86,6 +86,8 @@ function loadQuestion() {
   if (q.special) {
     const quitobtn = [...buttons].find(b => b.textContent === "Quito");
     const idkbtn = [...buttons].find(b => b.textContent === "Idk");
+    const milanbtn = [...buttons].find(b => b.textContent === "Milan");
+
     let moves = 0;
 
     quitobtn.addEventListener("mouseenter", () => {
@@ -121,9 +123,18 @@ function loadQuestion() {
       current++;
       setTimeout(loadQuestion, 2500);
     };
-    
+
+    // Milan fait perdre 119 IQ
+    milanbtn.onclick = () => {
+      iq -= 119;
+      document.getElementById('iq').textContent = `IQ: ${iq}`;
+      document.getElementById('message').textContent = "Tried to brain the troller ?";
+      current++;
+      setTimeout(loadQuestion, 2500);
+    };
+
     buttons.forEach(btn => {
-      if (btn !== quitobtn && btn !== idkbtn) {
+      if (btn !== quitobtn && btn !== idkbtn && btn !== milanbtn) {
         btn.onclick = () => checkAnswer(btn.textContent);
       }
     });
