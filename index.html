@@ -193,5 +193,72 @@ loadQuestion();
 </body>
 </html>
    ├── autre-jeu.html     (plus tard)
-   ├── style.css          (design commun)
+   ├── style.css          body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #f0f4ff, #e6e9ff);
+  text-align: center;
+  color: #333;
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin-top: 20px;
+}
+
+p {
+  color: #555;
+}
+
+.game-list {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 30px;
+}
+
+.game-card {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  width: 250px;
+  padding: 15px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.game-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.game-card img {
+  max-width: 100%;
+  border-radius: 10px;
+}
+
+h2 {
+  margin: 15px 0 5px;
+}
+
+.play-btn {
+  display: inline-block;
+  background: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  margin-top: 10px;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background 0.3s ease;
+}
+
+.play-btn:hover {
+  background: #45a049;
+}
+
+.play-btn.disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
    └── images/            (images des jeux)
