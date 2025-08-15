@@ -82,10 +82,10 @@ function loadQuestion() {
     const quitobtn = [...buttons].find(b => b.textContent === "Quito");
 
     quitobtn.addEventListener("mouseenter", () => {
-      const dx = (Math.random() - 0.5) * 200;
-      const dy = (Math.random() - 0.5) * 100;
-      quitobtn.style.transform = `translate(${dx}px, ${dy}px)`;
-    });
+  const dx = (Math.random() - 0.5) * window.innerWidth * 0.8; // Large déplacement horizontal
+  const dy = (Math.random() - 0.5) * window.innerHeight * 0.8; // Large déplacement vertical
+  quitobtn.style.transform = `translate(${dx}px, ${dy}px)`;
+});
 
     quitobtn.onclick = () => {
       iq = 0;
