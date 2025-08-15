@@ -4,47 +4,71 @@
 <meta charset="UTF-8">
 <title>IQ Test Troll</title>
 <style>
-  body { font-family: Arial, sans-serif; text-align: center; margin-top: 40px; }
-  .question { font-size: 1.5em; margin: 20px 0; }
-  .answers { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
-  button { padding: 10px 20px; font-size: 1em; cursor: pointer; position: relative; }
-  #status { margin-top: 10px; font-size: 1.2em; color: gray; }
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin-top: 40px;
+  }
+  .question {
+    font-size: 1.5em;
+    margin: 20px 0;
+  }
+  .answers {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  button {
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    position: relative;
+  }
+  #trollMessage {
+    font-size: 1.2em;
+    color: red;
+    margin-top: 15px;
+  }
 </style>
 </head>
 <body>
 
 <h1>🧠 IQ Test</h1>
 <div id="iq">IQ: 0</div>
-<div id="status"></div>
+<div id="brainStatus"></div>
 <div id="quiz"></div>
+<div id="trollMessage"></div>
 
 <script>
 let iq = 0;
 let current = 0;
+let moving = false;
 let moveInterval;
 
 const questions = [
   { q: "What is 2 + 2 ?", a: ["3", "4", "5"], correct: "4" },
   { q: "Which one is a fruit?", a: ["Carrot", "Apple", "Potato"], correct: "Apple" },
   { q: "What color is the sky on a clear day?", a: ["Blue", "Green", "Red"], correct: "Blue" },
-  { q: "Which animal barks?", a: ["Dog", "Cat", "Fish"], correct: "Dog" },
   { q: "Which planet is known as the Red Planet?", a: ["Mars", "Venus", "Jupiter"], correct: "Mars" },
-  { q: "How many days are in a week?", a: ["5", "7", "9"], correct: "7" },
-  {
+  { q: "How many days in a week?", a: ["5", "7", "10"], correct: "7" },
+  { q: "Which animal barks?", a: ["Dog", "Cat", "Cow"], correct: "Dog" },
+  { 
     q: "What's Equator's Capital? (Hint: starts with Q)",
-    a: ["Quito", "Milan", "Idk I'm such a genius I can't answer"],
-    correct: "Idk I'm such a genius I can't answer",
+    a: ["Quito", "Milan", "Idk"],
+    correct: "Idk", // troll
     troll: true
   }
 ];
 
 function loadQuestion() {
-  clearInterval(moveInterval);
+  document.getElementById('trollMessage').textContent = "";
+
   if (current >= questions.length) {
     document.getElementById('quiz').innerHTML = `<h2>Test Finished! Your IQ is ${iq}</h2>`;
     return;
   }
-
+  
   const q = questions[current];
   let html = `<div class="question">${q.q}</div><div class="answers">`;
 
@@ -55,14 +79,16 @@ function loadQuestion() {
   html += `</div>`;
   document.getElementById('quiz').innerHTML = html;
 
-  const buttons = document.querySelectorAll("button");
+  document.querySelectorAll("button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      checkAnswer(btn.textContent);
+    });
+  });
 
   if (q.troll) {
-    const quitobtn = [...buttons].find(b => b.textContent === "Quito");
-    let moving = false;
+    const quitobtn = [...document.querySelectorAll("button")].find(b => b.textContent === "Quito");
 
-    // Quand on survole Quito, il commence à bouger
-    quitobtn.addEventListener("mouseover", () => {
+    quitobtn.addEventListener("mouseenter", () => {
       if (!moving) {
         moving = true;
         moveInterval = setInterval(() => {
@@ -71,42 +97,31 @@ function loadQuestion() {
           quitobtn.style.top = Math.random() * (window.innerHeight - 50) + "px";
         }, 300);
 
-        // S'arrête après 5 secondes
+        // Stop after 5 sec
         setTimeout(() => {
           clearInterval(moveInterval);
           quitobtn.style.position = "relative";
+          moving = false;
         }, 5000);
       }
     });
 
     quitobtn.onclick = () => {
-      alert("Seriously ? Milan is Equator's capital ? Bro, it's in Italy ! You deserved it !");
+      document.getElementById('trollMessage').textContent =
+        "😂 Seriously? Milan is Equator's capital? Bro, it's in Italy! You deserved it!";
       iq = 0;
       document.getElementById('iq').textContent = `IQ: ${iq}`;
-      document.getElementById('status').textContent = "🍼 Baby brain";
+      document.getElementById('brainStatus').textContent = "🍼 Baby brain";
       current++;
-      loadQuestion();
+      setTimeout(loadQuestion, 2000);
     };
-
-    buttons.forEach(b => {
-      if (b.textContent === "Milan") {
-        b.onclick = () => checkAnswer("Milan");
-      } else if (b.textContent !== "Quito") {
-        b.onclick = () => checkAnswer(b.textContent);
-      }
-    });
-
-  } else {
-    buttons.forEach(b => {
-      b.onclick = () => checkAnswer(b.textContent);
-    });
   }
 }
 
 function checkAnswer(chosen) {
   const correct = questions[current].correct;
   if (chosen === correct) {
-    iq += current < questions.length - 1 ? 30 : 0;
+    if (current < questions.length - 1) iq += 30; // +30 except troll
     document.getElementById('iq').textContent = `IQ: ${iq}`;
     alert("✅ Correct!");
   } else {
