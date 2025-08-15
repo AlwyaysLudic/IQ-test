@@ -4,25 +4,27 @@
 <meta charset="UTF-8">
 <title>IQ Test Troll</title>
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    margin-top: 40px;
+  body { font-family: Arial, sans-serif; text-align: center; margin-top: 40px; }
+  .question { font-size: 1.5em; margin: 20px 0; }
+  .answers { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+  button { padding: 10px 20px; font-size: 1em; cursor: pointer; position: relative; }
+  #troll-message {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border: 2px solid black;
+    padding: 20px;
+    font-size: 1.2em;
+    display: none;
+    z-index: 9999;
+    width: 300px;
   }
-  .question {
-    font-size: 1.5em;
-    margin: 20px 0;
-  }
-  .answers {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-  }
-  button {
-    padding: 10px 20px;
-    font-size: 1em;
-    cursor: pointer;
-    position: relative;
+  #baby-brain {
+    font-weight: bold;
+    color: red;
+    margin-top: 10px;
+    display: none;
   }
 </style>
 </head>
@@ -30,34 +32,21 @@
 
 <h1>🧠 IQ Test</h1>
 <div id="iq">IQ: 0</div>
+<div id="baby-brain"></div>
 <div id="quiz"></div>
+<div id="troll-message"></div>
 
 <script>
 let iq = 0;
 let current = 0;
 
 const questions = [
-  {
-    q: "What is 2 + 2 ?",
-    a: ["3", "4", "5"],
-    correct: "4"
-  },
-  {
-    q: "Which one is a fruit?",
-    a: ["Carrot", "Apple", "Potato"],
-    correct: "Apple"
-  },
-  {
-    q: "What color is the sky on a clear day?",
-    a: ["Blue", "Green", "Red"],
-    correct: "Blue"
-  },
-  {
-    q: "What's Equator's Capital? (Hint: starts with Q)",
-    a: ["Quito", "Milan", "London"],
-    correct: "Milan", // Troll: clicking Quito will select Milan
-    troll: true
-  }
+  { q: "What is 2 + 2 ?", a: ["3", "4", "5"], correct: "4" },
+  { q: "Which one is a fruit?", a: ["Carrot", "Apple", "Potato"], correct: "Apple" },
+  { q: "What color is the sky on a clear day?", a: ["Blue", "Green", "Red"], correct: "Blue" },
+  { q: "How many legs does a spider have?", a: ["6", "8", "10"], correct: "8" },
+  { q: "Which planet is known as the Red Planet?", a: ["Earth", "Mars", "Jupiter"], correct: "Mars" },
+  { q: "What's Equator's Capital? (Hint: starts with Q)", a: ["Quito", "Milan", "London"], correct: "Milan", troll: true }
 ];
 
 function loadQuestion() {
@@ -70,34 +59,78 @@ function loadQuestion() {
   let html = `<div class="question">${q.q}</div><div class="answers">`;
 
   q.a.forEach(ans => {
-    html += `<button onclick="checkAnswer('${ans}')">${ans}</button>`;
+    html += `<button>${ans}</button>`;
   });
 
   html += `</div>`;
   document.getElementById('quiz').innerHTML = html;
 
+  const buttons = document.querySelectorAll("button");
+
   if (q.troll) {
-    const quitobtn = [...document.querySelectorAll("button")].find(b => b.textContent === "Quito");
+    const quitobtn = [...buttons].find(b => b.textContent === "Quito");
+    let moving = true;
+
+    setTimeout(() => moving = false, 3000);
+
     quitobtn.addEventListener("mouseover", () => {
-      quitobtn.style.position = "absolute";
-      quitobtn.style.left = Math.random() * (window.innerWidth - 100) + "px";
-      quitobtn.style.top = Math.random() * (window.innerHeight - 50) + "px";
+      if (moving) {
+        quitobtn.style.position = "absolute";
+        quitobtn.style.left = Math.random() * (window.innerWidth - 100) + "px";
+        quitobtn.style.top = Math.random() * (window.innerHeight - 50) + "px";
+      }
     });
-    quitobtn.onclick = () => checkAnswer("Milan"); // force wrong mapping
+
+    quitobtn.addEventListener("click", () => {
+      showTrollMessage();
+    });
+
+    buttons.forEach(b => {
+      if (b !== quitobtn) {
+        b.addEventListener("click", () => {
+          checkAnswer("wrong", true);
+        });
+      }
+    });
+  } else {
+    buttons.forEach(b => {
+      b.addEventListener("click", () => {
+        checkAnswer(b.textContent, false);
+      });
+    });
   }
 }
 
-function checkAnswer(chosen) {
+function checkAnswer(chosen, lastQuestion) {
   const correct = questions[current].correct;
-  if (chosen === correct) {
-    iq += current < 3 ? 30 : 0; // +30 only for first 3
+
+  if (!lastQuestion && chosen === correct) {
+    iq += current < questions.length - 1 ? 30 : 0;
     document.getElementById('iq').textContent = `IQ: ${iq}`;
     alert("✅ Correct!");
   } else {
     alert("❌ Wrong!");
   }
+
   current++;
   loadQuestion();
+}
+
+function showTrollMessage() {
+  iq = 0;
+  document.getElementById('iq').textContent = `IQ: ${iq}`;
+  document.getElementById('baby-brain').textContent = "A baby brain";
+  document.getElementById('baby-brain').style.display = "block";
+
+  const msg = document.getElementById('troll-message');
+  msg.textContent = "Seriously ? Milan is Equator's capital ? Bro, it's in Italy ! You deserved it !";
+  msg.style.display = "block";
+
+  setTimeout(() => {
+    msg.style.display = "none";
+    current++;
+    loadQuestion();
+  }, 4000);
 }
 
 loadQuestion();
