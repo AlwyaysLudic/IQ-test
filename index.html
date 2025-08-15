@@ -18,14 +18,13 @@
     justify-content: center;
     gap: 10px;
     flex-wrap: wrap;
-    position: relative;
+    position: relative; /* Nécessaire pour que Quito se déplace dans ce conteneur */
   }
   button {
     padding: 10px 20px;
     font-size: 1em;
     cursor: pointer;
     transition: transform 0.2s;
-    position: relative;
   }
   #message {
     font-size: 1.2em;
@@ -99,7 +98,7 @@ function loadQuestion() {
       }
     });
 
-    // Quito → reset IQ et message moqueur
+    // Quito → reset IQ
     quitobtn.onclick = () => {
       iq = 0;
       document.getElementById('iq').textContent = `IQ: ${iq}`;
@@ -109,7 +108,7 @@ function loadQuestion() {
       setTimeout(loadQuestion, 2500);
     };
 
-    // Autres boutons
+    // Gestion des autres réponses
     buttons.forEach(btn => {
       if (btn.textContent === "Idk") {
         btn.onclick = () => {
@@ -134,7 +133,7 @@ function loadQuestion() {
 function checkAnswer(chosen) {
   const correct = questions[current].correct;
   if (chosen === correct) {
-    iq += 10; // toutes les bonnes réponses donnent +10 IQ
+    iq += 10; // +10 IQ pour chaque bonne réponse
     document.getElementById('iq').textContent = `IQ: ${iq}`;
     alert("✅ Correct!");
   } else {
