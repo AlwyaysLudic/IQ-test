@@ -18,13 +18,14 @@
     justify-content: center;
     gap: 10px;
     flex-wrap: wrap;
+    position: relative;
   }
   button {
     padding: 10px 20px;
     font-size: 1em;
     cursor: pointer;
-    position: relative;
     transition: transform 0.2s;
+    position: relative;
   }
   #message {
     font-size: 1.2em;
@@ -83,17 +84,22 @@ function loadQuestion() {
     const quitobtn = [...buttons].find(b => b.textContent === "Quito");
     let moves = 0;
 
+    quitobtn.style.position = "absolute";
+
     quitobtn.addEventListener("mouseenter", () => {
       if (moves < 8) {
-        const maxX = window.innerWidth - quitobtn.offsetWidth;
-        const maxY = window.innerHeight - quitobtn.offsetHeight;
-        const dx = Math.random() * maxX - maxX / 2;
-        const dy = Math.random() * maxY - maxY / 2;
-        quitobtn.style.transform = `translate(${dx}px, ${dy}px)`;
+        const parent = quitobtn.parentElement;
+        const maxX = parent.clientWidth - quitobtn.offsetWidth;
+        const maxY = parent.clientHeight - quitobtn.offsetHeight;
+        const newX = Math.random() * maxX;
+        const newY = Math.random() * maxY;
+        quitobtn.style.left = `${newX}px`;
+        quitobtn.style.top = `${newY}px`;
         moves++;
       }
     });
 
+    // Quito → reset IQ et message moqueur
     quitobtn.onclick = () => {
       iq = 0;
       document.getElementById('iq').textContent = `IQ: ${iq}`;
@@ -103,8 +109,17 @@ function loadQuestion() {
       setTimeout(loadQuestion, 2500);
     };
 
+    // Autres boutons
     buttons.forEach(btn => {
-      if (btn !== quitobtn) {
+      if (btn.textContent === "Idk") {
+        btn.onclick = () => {
+          iq -= 120;
+          document.getElementById('iq').textContent = `IQ: ${iq}`;
+          document.getElementById('message').textContent = "Don't you dare cheating ?";
+          current++;
+          setTimeout(loadQuestion, 2500);
+        };
+      } else if (btn !== quitobtn) {
         btn.onclick = () => checkAnswer(btn.textContent);
       }
     });
@@ -119,9 +134,7 @@ function loadQuestion() {
 function checkAnswer(chosen) {
   const correct = questions[current].correct;
   if (chosen === correct) {
-    if (!questions[current].special) {
-      iq += (current < 3) ? 30 : 10;
-    }
+    iq += 10; // toutes les bonnes réponses donnent +10 IQ
     document.getElementById('iq').textContent = `IQ: ${iq}`;
     alert("✅ Correct!");
   } else {
