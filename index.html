@@ -24,6 +24,7 @@
     font-size: 1em;
     cursor: pointer;
     transition: transform 0.2s;
+    position: relative; /* important pour le déplacement */
   }
   #message {
     font-size: 1.2em;
@@ -79,21 +80,21 @@ function loadQuestion() {
   const buttons = document.querySelectorAll("button");
 
   if (q.special) {
+    let moves = 0;
     const quitobtn = [...buttons].find(b => b.textContent === "Quito");
-    let moves = 0; // nombre de bonds effectués
 
-  quitobtn.addEventListener("mouseenter", () => {
-  if (moves < 8) { // Quito bouge seulement 8 fois max
-    const maxX = window.innerWidth - quitobtn.offsetWidth;
-    const maxY = window.innerHeight - quitobtn.offsetHeight;
+    quitobtn.addEventListener("mouseenter", () => {
+      if (moves < 8) {
+        const maxX = window.innerWidth - quitobtn.offsetWidth - 50;
+        const maxY = window.innerHeight - quitobtn.offsetHeight - 50;
 
-    const dx = Math.random() * maxX - maxX / 2;
-    const dy = Math.random() * maxY - maxY / 2;
+        const dx = Math.random() * maxX - maxX / 2;
+        const dy = Math.random() * maxY - maxY / 2;
 
-    quitobtn.style.transform = `translate(${dx}px, ${dy}px)`;
-    moves++;
-  }
-});
+        quitobtn.style.transform = `translate(${dx}px, ${dy}px)`;
+        moves++;
+      }
+    });
 
     quitobtn.onclick = () => {
       iq = 0;
@@ -120,7 +121,7 @@ function loadQuestion() {
 function checkAnswer(chosen) {
   const correct = questions[current].correct;
   if (chosen === correct) {
-    if (current < 3) iq += 30; // +30 uniquement pour les 3 premières questions
+    if (current < 3) iq += 30;
     document.getElementById('iq').textContent = `IQ: ${iq}`;
     alert("✅ Correct!");
   } else {
