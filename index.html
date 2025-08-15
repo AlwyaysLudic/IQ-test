@@ -195,73 +195,83 @@ loadQuestion();
 </html>
 
   ├── autre-jeu.html   (vide pour l’instant)
-  ├── style.cssbody {
-  font-family: 'Arial', sans-serif;
+  ├── style.css/* General styles */
+body {
+  font-family: 'Poppins', sans-serif;
   margin: 0;
   padding: 0;
-  background: linear-gradient(135deg, #f0f4ff, #e6e9ff);
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  color: #fff;
   text-align: center;
-  color: #333;
 }
 
-h1 {
+/* Header */
+header {
+  padding: 40px 20px;
+}
+header h1 {
   font-size: 2.5rem;
-  margin-top: 20px;
+  margin-bottom: 10px;
+}
+header p {
+  font-size: 1.2rem;
+  color: #d1d1d1;
 }
 
-p {
-  color: #555;
-}
-
+/* Game list */
 .game-list {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 20px;
-  padding: 30px;
+  gap: 30px;
+  padding: 40px 20px;
 }
 
+/* Game card */
 .game-card {
   background: white;
+  color: #333;
   border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  width: 250px;
-  padding: 15px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  width: 260px;
+  padding: 20px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
-
 .game-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  transform: translateY(-8px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
 }
-
 .game-card img {
   max-width: 100%;
   border-radius: 10px;
 }
 
-h2 {
-  margin: 15px 0 5px;
-}
-
+/* Buttons */
 .play-btn {
   display: inline-block;
   background: #4CAF50;
   color: white;
-  padding: 10px 20px;
-  margin-top: 10px;
+  padding: 12px 24px;
+  margin-top: 12px;
   text-decoration: none;
   border-radius: 8px;
+  font-weight: bold;
   transition: background 0.3s ease;
 }
-
 .play-btn:hover {
   background: #45a049;
 }
-
 .play-btn.disabled {
-  background: #ccc;
+  background: #999;
   cursor: not-allowed;
+}
+
+/* Footer */
+footer {
+  padding: 20px;
+  background: rgba(0,0,0,0.2);
+  margin-top: 40px;
+  font-size: 0.9rem;
 }
   └── images/
        ├── iqtest.png
