@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>IQ Test </title>
+<title>IQ Test</title>
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -52,8 +52,8 @@ const questions = [
   {
     q: "What's Equator's Capital? (Hint: starts with Q)",
     a: ["Quito", "Milan", "London"],
-    correct: "Milan", // troll: Quito clique = Milan
-    troll: true
+    correct: "Milan",
+    special: true
   }
 ];
 
@@ -77,17 +77,15 @@ function loadQuestion() {
 
   const buttons = document.querySelectorAll("button");
 
-  if (q.troll) {
+  if (q.special) {
     const quitobtn = [...buttons].find(b => b.textContent === "Quito");
 
-    // Déplacement à chaque survol, mais reste visible
     quitobtn.addEventListener("mouseenter", () => {
       const dx = (Math.random() - 0.5) * 200;
       const dy = (Math.random() - 0.5) * 100;
       quitobtn.style.transform = `translate(${dx}px, ${dy}px)`;
     });
 
-    // Quito → troll
     quitobtn.onclick = () => {
       iq = 0;
       document.getElementById('iq').textContent = `IQ: ${iq}`;
@@ -97,7 +95,6 @@ function loadQuestion() {
       setTimeout(loadQuestion, 2500);
     };
 
-    // Les autres réponses normales
     buttons.forEach(btn => {
       if (btn !== quitobtn) {
         btn.onclick = () => checkAnswer(btn.textContent);
@@ -114,7 +111,7 @@ function loadQuestion() {
 function checkAnswer(chosen) {
   const correct = questions[current].correct;
   if (chosen === correct) {
-    if (current < 3) iq += 30; // +30 seulement pour les 3 premières
+    if (current < 3) iq += 30;
     document.getElementById('iq').textContent = `IQ: ${iq}`;
     alert("✅ Correct!");
   } else {
