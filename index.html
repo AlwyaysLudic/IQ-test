@@ -18,13 +18,13 @@
     justify-content: center;
     gap: 10px;
     flex-wrap: wrap;
-    position: relative; /* pour le positionnement absolu des boutons */
   }
   button {
     padding: 10px 20px;
     font-size: 1em;
     cursor: pointer;
-    transition: left 0.2s, top 0.2s;
+    position: relative;
+    transition: transform 0.2s;
   }
   #message {
     font-size: 1.2em;
@@ -80,25 +80,16 @@ function loadQuestion() {
   const buttons = document.querySelectorAll("button");
 
   if (q.special) {
-    let moves = 0;
     const quitobtn = [...buttons].find(b => b.textContent === "Quito");
-
-    // Rendre Quito absolument positionné dans son conteneur
-    quitobtn.style.position = "absolute";
-    quitobtn.style.left = "0px";
-    quitobtn.style.top = "0px";
+    let moves = 0;
 
     quitobtn.addEventListener("mouseenter", () => {
       if (moves < 8) {
-        const container = quitobtn.parentElement;
-        const maxX = container.clientWidth - quitobtn.offsetWidth;
-        const maxY = container.clientHeight - quitobtn.offsetHeight;
-
-        const newX = Math.random() * maxX;
-        const newY = Math.random() * maxY;
-
-        quitobtn.style.left = `${newX}px`;
-        quitobtn.style.top = `${newY}px`;
+        const maxX = window.innerWidth - quitobtn.offsetWidth;
+        const maxY = window.innerHeight - quitobtn.offsetHeight;
+        const dx = Math.random() * maxX - maxX / 2;
+        const dy = Math.random() * maxY - maxY / 2;
+        quitobtn.style.transform = `translate(${dx}px, ${dy}px)`;
         moves++;
       }
     });
@@ -128,7 +119,9 @@ function loadQuestion() {
 function checkAnswer(chosen) {
   const correct = questions[current].correct;
   if (chosen === correct) {
-    if (current < 3) iq += 30;
+    if (!questions[current].special) {
+      iq += (current < 3) ? 30 : 10;
+    }
     document.getElementById('iq').textContent = `IQ: ${iq}`;
     alert("✅ Correct!");
   } else {
