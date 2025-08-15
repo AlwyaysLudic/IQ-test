@@ -32,8 +32,8 @@ const questions = [
   { q: "How many days are in a week?", a: ["5", "7", "9"], correct: "7" },
   {
     q: "What's Equator's Capital? (Hint: starts with Q)",
-    a: ["Quito", "Milan", "Idk"],
-    correct: "Idk",
+    a: ["Quito", "Milan", "Idk I'm such a genius I can't answer"],
+    correct: "Idk I'm such a genius I can't answer",
     troll: true
   }
 ];
@@ -59,17 +59,25 @@ function loadQuestion() {
 
   if (q.troll) {
     const quitobtn = [...buttons].find(b => b.textContent === "Quito");
+    let moving = false;
 
-    let moving = true;
-    moveInterval = setInterval(() => {
-      if (moving) {
-        quitobtn.style.position = "absolute";
-        quitobtn.style.left = Math.random() * (window.innerWidth - 100) + "px";
-        quitobtn.style.top = Math.random() * (window.innerHeight - 50) + "px";
+    // Quand on survole Quito, il commence à bouger
+    quitobtn.addEventListener("mouseover", () => {
+      if (!moving) {
+        moving = true;
+        moveInterval = setInterval(() => {
+          quitobtn.style.position = "absolute";
+          quitobtn.style.left = Math.random() * (window.innerWidth - 100) + "px";
+          quitobtn.style.top = Math.random() * (window.innerHeight - 50) + "px";
+        }, 300);
+
+        // S'arrête après 5 secondes
+        setTimeout(() => {
+          clearInterval(moveInterval);
+          quitobtn.style.position = "relative";
+        }, 5000);
       }
-    }, 300);
-
-    setTimeout(() => { moving = false; quitobtn.style.position = "relative"; }, 5000);
+    });
 
     quitobtn.onclick = () => {
       alert("Seriously ? Milan is Equator's capital ? Bro, it's in Italy ! You deserved it !");
